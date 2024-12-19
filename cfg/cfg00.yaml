@@ -1,0 +1,33 @@
+device: cuda:2
+data_shape: [1, 28, 28]
+batch_size: 128
+
+algo:
+  _target_: alg.reflow.ReFlow
+  device: ${device}
+  data_shape: ${data_shape}
+  model:
+    _target_: model.unet.UNetModelWrapper
+    dim: [1, 28, 28]
+    num_channels: 32
+    num_res_blocks: 1
+    num_classes: 10
+    class_cond: True
+  train_cfg:
+    n_epochs: 5
+    eval_interval: 1 #
+    inference_steps: 128
+    lr: 0.001
+    batch_size: ${batch_size}
+    use_bc_loss: False
+    use_scheduler: False
+  # model_path: /home/zhangtonghe/flow-mnist/log/24-12-08-12-04-10/ckpt/model_5.pth
+
+dataset:
+  device: ${device}
+  batch_size: ${batch_size}
+  use_first_train: -1
+  use_first_eval: -1
+
+
+  

@@ -1,0 +1,36 @@
+device: cuda:5
+data_shape: [1, 28, 28]
+batch_size: 128
+max_denoising_steps: 128 # this is used to train the flow-matching loss. 
+algo:
+  _target_: alg.shortcut_reflowv2.ShortCutReFlow
+  device: ${device}
+  data_shape: ${data_shape}
+  # model_path: 
+  model:
+    _target_: model.unet_shortcut.UNetShortCutModelWrapper
+    dim: [1, 28, 28]
+    num_channels: 32
+    num_res_blocks: 1
+    num_classes: 10
+    class_cond: True
+    # max_denoising_steps: ${max_denoising_steps}
+  train_cfg:
+    n_epochs: 20
+    eval_interval: 2 #
+    inference_steps: 128
+    lr: 0.001
+    batch_size: ${batch_size}
+    use_bc_loss: False
+    use_scheduler: False
+    max_denoising_steps: ${max_denoising_steps}      
+    alpha: 0.0   # no shortcut, just flow with another channel, let's see whether we can make it even when num_denoising_steps changes from 1 to 128
+    alpha_scheduler: constant # balance_gradual_sine
+dataset:
+  device: ${device}
+  batch_size: ${batch_size}
+  use_first_train: -1
+  use_first_eval:  -1
+
+
+  

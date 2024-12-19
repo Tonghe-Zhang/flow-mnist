@@ -1,0 +1,38 @@
+device: cuda:3
+data_shape: [1, 28, 28]
+batch_size: 128
+
+algo:
+  _target_: alg.shortcut_reflow.ShortCutReFlow
+  device: ${device}
+  data_shape: ${data_shape}
+  model_path: /home/zhangtonghe/flow-mnist/log/ShortCutReFlow/24-12-11-20-56-28_balance_-1/ckpt/model_10.pth   # reflow, balance_gradual, balance
+  #/home/zhangtonghe/flow-mnist/log/ShortCutReFlow/24-12-11-20-56-28_balance_-1/ckpt/model_10.pth
+  # /home/zhangtonghe/flow-mnist/log/ShortCutReFlow/24-12-11-20-54-45_balance_gradual_-1/ckpt/model_10.pth
+  # /home/zhangtonghe/flow-mnist/log/ShortCutReFlow/24-12-11-20-51-14_constant_1/ckpt/model_10.pth
+  model:
+    _target_: model.unet_shortcut.UNetShortCutModelWrapper
+    dim: [1, 28, 28]
+    num_channels: 32
+    num_res_blocks: 1
+    num_classes: 10
+    class_cond: True
+  train_cfg:
+    n_epochs: 10
+    eval_interval: 1 #
+    inference_steps: 128
+    lr: 0.001
+    batch_size: ${batch_size}
+    use_bc_loss: False
+    use_scheduler: False
+    max_denoising_steps: 128      # this is used to train the flow-matching loss. 
+    alpha: -1
+    alpha_scheduler: balance_gradual_sine
+dataset:
+  device: ${device}
+  batch_size: ${batch_size}
+  use_first_train: -1
+  use_first_eval:  -1
+
+
+  
