@@ -1,6 +1,6 @@
 # Flow
 
-Minimal repository to reproduced shortcut flow-matching models on MNIST dataset. 
+Minimal repository to reproduce shortcut flow-matching models on MNIST dataset. 
 Proof-of-concept for senior thesis on using shortuct flow-matching models to train robot policies. 
 
 
